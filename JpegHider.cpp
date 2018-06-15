@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <cstring>
 #include <ctime>
+#include <string>
 #include <iostream>
 #include <fstream>
 
@@ -41,10 +42,14 @@ void hideData(const char* dst, const char* src) {
     const char key = rand();
     fileData data = getFileData(src);
 #ifdef linux
-    src = std::strrchr(src, '/')+1;
+	const char* pos = std::strrchr(src, '/');
+	if (pos != NULL)
+		src = pos+1;
 #endif
 #ifdef _WIN32
-    src = std::strrchr(src, '\\')+1;
+	const char* pos = std::strrchr(src, '\\');
+	if(pos != NULL)
+		src = pos+1;
 #endif
     uint32_t nameLen = std::strlen(src);
     uint32_t nameLen2 = nameLen;
@@ -81,6 +86,7 @@ void extractData(const char* file) {
     *hiddenLen -= 4;
     char* fileName = new char[nameSize+1];
     std::strncpy(fileName, hiddenData, nameSize);
+	fileName[nameSize] = 0;
     hiddenData += nameSize;
     *hiddenLen -= nameSize;
     
